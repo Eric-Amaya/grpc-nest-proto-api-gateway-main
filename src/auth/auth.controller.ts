@@ -1,6 +1,6 @@
 import { Controller, Inject } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { AuthServiceClient, AUTH_SERVICE_NAME, RegisterRequest, LoginRequest, ValidateRequest } from './auth.pb';
+import { AuthServiceClient, AUTH_SERVICE_NAME, RegisterRequest, LoginRequest, ValidateRequest, RecoveryRequest } from './auth.pb';
 import { Observable } from 'rxjs';
 import { Body, Post } from '@nestjs/common';
 
@@ -29,4 +29,9 @@ export class AuthController {
   validate(@Body() request: ValidateRequest): Observable<any> {
     return this.authService.validate(request);
   }
+
+  @Post('recovery')
+  recovery(@Body() request: RecoveryRequest): Observable <any> {
+    return this.authService.recovery(request);
+  } 
 }

@@ -19,7 +19,6 @@ RUN npm install
 COPY . .
 
 # Run proto install and generate TypeScript files from proto files
-RUN npm run proto:install
 RUN npm run proto:all
 
 # Make port 8000 available to the world outside this container

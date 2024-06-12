@@ -1,6 +1,6 @@
 import { Controller, Inject } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { AuthServiceClient, AUTH_SERVICE_NAME, RegisterRequest, LoginRequest, ValidateRequest, RecoveryRequest } from './auth.pb';
+import { AuthServiceClient, AUTH_SERVICE_NAME, RegisterRequest, LoginRequest, ValidateRequest, RecoveryRequest, VerifyCodeRequest, ChangePasswordRequest } from './auth.pb';
 import { Observable } from 'rxjs';
 import { Body, Post } from '@nestjs/common';
 
@@ -34,4 +34,14 @@ export class AuthController {
   recovery(@Body() request: RecoveryRequest): Observable <any> {
     return this.authService.recovery(request);
   } 
+
+  @Post('verifycode')
+  verifyCode(@Body() request: VerifyCodeRequest): Observable <any> {
+    return this.authService.verifyCode(request);
+  }
+
+  @Post('changepassword')
+  changePassword(@Body() request: ChangePasswordRequest): Observable <any> {
+    return this.authService.changePassword(request);
+  }
 }

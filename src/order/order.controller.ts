@@ -54,7 +54,7 @@ export class OrderController {
     return this.orderService.getOrder(request);
   }
 
-  @Get()
+  @Get('')
   @Auth(Role.USER)
   getAllOrders(): Observable<any> {
     const request: GetAllOrdersRequest = {};
@@ -67,9 +67,10 @@ export class OrderController {
     return this.orderService.createSale(request);
   }
 
-  @Get('sales')
+  @Get('sales/all')
   @Auth(Role.USER)
-  getAllSales(@Body() request: GetAllSalesRequest): Observable <any> {
+  getAllSales(): Observable <any> {
+    const request: GetAllSalesRequest = {};
     return this.orderService.getAllSales(request);
   }
 

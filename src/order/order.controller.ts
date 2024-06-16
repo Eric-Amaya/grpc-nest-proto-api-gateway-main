@@ -1,4 +1,4 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, Inject, Query } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { OrderServiceClient, ORDER_SERVICE_NAME, CreateOrderRequest, GetOrderRequest, GetAllOrdersRequest, CreateTableRequest, GetTablesByNameRequest, GetAllTablesRequest, UpdateTableStateRequest, CreateSaleRequest, GetAllSalesRequest, GetSalesByUserRequest, GetSalesByDateRequest } from './order.pb';
 import { Observable } from 'rxjs';
@@ -19,19 +19,21 @@ export class OrderController {
 
   @Post('tables/create')
   @Auth(Role.USER)
-  createTable(@Body() request:  CreateTableRequest): Observable<any> {
+  createTable(@Body() request: CreateTableRequest): Observable<any> {
     return this.orderService.createTable(request);
   }
 
   @Get('tables/name')
   @Auth(Role.USER)
-  getTablesByName(@Body() request:  GetTablesByNameRequest): Observable<any> {
-    return this.orderService.getTablesByName(request);
+  getTablesByName(@Query('name') name: string): Observable<any> {
+      const request: GetTablesByNameRequest = { name: name };
+      return this.orderService.getTablesByName(request);
   }
 
   @Get('tables')
   @Auth(Role.USER)
-  getAllTables(@Body() request:  GetAllTablesRequest): Observable<any> {
+  getAllTables(): Observable<any> {
+    const request: GetAllTablesRequest = {};
     return this.orderService.getAllTables(request);
   }
 
@@ -76,13 +78,15 @@ export class OrderController {
 
   @Get('sales/user')
   @Auth(Role.USER)
-  getSalesByUser(@Body() request: GetSalesByUserRequest): Observable <any> {
+  getSalesByUser(@Query('user') userName: string): Observable <any> {
+    const request: GetSalesByUserRequest = {userName: userName};
     return this.orderService.getSalesByUser(request);
   }
 
   @Get('sales/date')
   @Auth(Role.USER)
-  getSalesByDate(@Body() request: GetSalesByDateRequest): Observable <any> {
+  getSalesByDate(@Query('date') date: string): Observable <any> {
+    const request: GetSalesByDateRequest = {date:date};
     return this.orderService.getSalesByDate(request);
   }
 }

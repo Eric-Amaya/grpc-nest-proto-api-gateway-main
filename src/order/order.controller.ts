@@ -70,7 +70,7 @@ export class OrderController {
   }
 
   @Get('sales/all')
-  @Auth(Role.USER)
+  @Auth(Role.ADMIN)
   getAllSales(): Observable <any> {
     const request: GetAllSalesRequest = {};
     return this.orderService.getAllSales(request);

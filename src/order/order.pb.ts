@@ -20,6 +20,10 @@ export interface CreateOrderRequest {
 export interface OrderItem {
   productId: number;
   quantity: number;
+  modifications: string;
+  productName: string;
+  pricePerUnit: number;
+  totalPrice: number;
 }
 
 export interface CreateOrderResponse {

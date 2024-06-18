@@ -37,7 +37,7 @@ export class ProductController {
   }
 
   @Post('/product/update')
-  @Auth(Role.ADMIN)
+  @Auth(Role.USER)
   updateProduct(@Body() request: UpdateProductRequest) : Observable<any> {
     return this.productService.updateProduct(request);
   }

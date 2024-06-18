@@ -1,8 +1,25 @@
 import { Controller, Inject, Query } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { OrderServiceClient, ORDER_SERVICE_NAME, CreateOrderRequest, GetOrderRequest, GetAllOrdersRequest, CreateTableRequest, GetTablesByNameRequest, GetAllTablesRequest, UpdateTableStateRequest, CreateSaleRequest, GetAllSalesRequest, GetSalesByUserRequest, GetSalesByDateRequest } from './order.pb';
+import {
+  OrderServiceClient,
+  ORDER_SERVICE_NAME,
+  CreateOrderRequest,
+  GetOrderRequest,
+  GetAllOrdersRequest,
+  CreateTableRequest,
+  GetTablesByNameRequest,
+  GetAllTablesRequest,
+  UpdateTableStateRequest,
+  CreateSaleRequest,
+  GetAllSalesRequest,
+  GetSalesByUserRequest,
+  GetSalesByDateRequest,
+  DeleteOrderItemRequest,
+  UpdateOrderRequest,
+  UpdateOrderResponse,
+} from './order.pb';
 import { Observable } from 'rxjs';
-import { Body, Get, Param, Post } from '@nestjs/common';
+import { Body, Get, Param, Post, Delete, Patch } from '@nestjs/common';
 import { Auth } from '../common/decorators/auth.decorator';
 import { Role } from '../common/enums/role.enum';
 
@@ -14,7 +31,8 @@ export class OrderController {
   private readonly client: ClientGrpc;
 
   onModuleInit() {
-    this.orderService = this.client.getService<OrderServiceClient>(ORDER_SERVICE_NAME);
+    this.orderService =
+      this.client.getService<OrderServiceClient>(ORDER_SERVICE_NAME);
   }
 
   @Post('tables/create')
@@ -26,8 +44,8 @@ export class OrderController {
   @Get('tables/name')
   @Auth(Role.USER)
   getTablesByName(@Query('name') name: string): Observable<any> {
-      const request: GetTablesByNameRequest = { name: name };
-      return this.orderService.getTablesByName(request);
+    const request: GetTablesByNameRequest = { name: name };
+    return this.orderService.getTablesByName(request);
   }
 
   @Get('tables')
@@ -39,7 +57,7 @@ export class OrderController {
 
   @Post('tables/update')
   @Auth(Role.USER)
-  updateTableState(@Body() request:  UpdateTableStateRequest): Observable<any> {
+  updateTableState(@Body() request: UpdateTableStateRequest): Observable<any> {
     return this.orderService.updateTableState(request);
   }
 
@@ -63,30 +81,53 @@ export class OrderController {
     return this.orderService.getAllOrders(request);
   }
 
+  @Delete('/delete/:orderId/:productId')
+  @Auth(Role.USER)
+  deleteOrderItem(
+    @Param('orderId') orderId: number,
+    @Param('productId') productId: number,
+  ): Observable<any> {
+    const request: DeleteOrderItemRequest = {
+      orderId: orderId,
+      productId: productId,
+    };
+    return this.orderService.deleteOrderItem(request);
+  }
+
+  @Patch('update/:orderId')
+  @Auth(Role.USER)
+  updateOrder(
+    @Param('orderId') orderId: number,
+    @Body() request: UpdateOrderRequest,
+  ): Observable<UpdateOrderResponse> {
+    request.orderId = orderId;
+    return this.orderService.updateOrder(request);
+  }
+
   @Post('sales/create')
   @Auth(Role.USER)
-  createSale(@Body() request: CreateSaleRequest): Observable <any> {
+  createSale(@Body() request: CreateSaleRequest): Observable<any> {
     return this.orderService.createSale(request);
   }
 
   @Get('sales/all')
   @Auth(Role.ADMIN)
-  getAllSales(): Observable <any> {
+  getAllSales(): Observable<any> {
     const request: GetAllSalesRequest = {};
     return this.orderService.getAllSales(request);
   }
 
   @Get('sales/user')
   @Auth(Role.ADMIN)
-  getSalesByUser(@Query('user') userName: string): Observable <any> {
-    const request: GetSalesByUserRequest = {userName: userName};
+  getSalesByUser(@Query('user') userName: string): Observable<any> {
+    const request: GetSalesByUserRequest = { userName: userName };
     return this.orderService.getSalesByUser(request);
   }
 
   @Get('sales/date')
   @Auth(Role.ADMIN)
-  getSalesByDate(@Query('date') date: string): Observable <any> {
-    const request: GetSalesByDateRequest = {date:date};
+  getSalesByDate(@Query('date') date: string): Observable<any> {
+    const request: GetSalesByDateRequest = { date: date };
     return this.orderService.getSalesByDate(request);
   }
 }

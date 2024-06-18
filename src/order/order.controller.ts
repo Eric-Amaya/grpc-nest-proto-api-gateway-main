@@ -18,7 +18,7 @@ export class OrderController {
   }
 
   @Post('tables/create')
-  @Auth(Role.USER)
+  @Auth(Role.ADMIN)
   createTable(@Body() request: CreateTableRequest): Observable<any> {
     return this.orderService.createTable(request);
   }
@@ -77,14 +77,14 @@ export class OrderController {
   }
 
   @Get('sales/user')
-  @Auth(Role.USER)
+  @Auth(Role.ADMIN)
   getSalesByUser(@Query('user') userName: string): Observable <any> {
     const request: GetSalesByUserRequest = {userName: userName};
     return this.orderService.getSalesByUser(request);
   }
 
   @Get('sales/date')
-  @Auth(Role.USER)
+  @Auth(Role.ADMIN)
   getSalesByDate(@Query('date') date: string): Observable <any> {
     const request: GetSalesByDateRequest = {date:date};
     return this.orderService.getSalesByDate(request);

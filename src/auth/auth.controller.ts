@@ -1,8 +1,10 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, Inject, Param } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { AuthServiceClient, AUTH_SERVICE_NAME, RegisterRequest, LoginRequest, ValidateRequest, RecoveryRequest, VerifyCodeRequest, ChangePasswordRequest } from './auth.pb';
+import { AuthServiceClient, AUTH_SERVICE_NAME, RegisterRequest, LoginRequest, ValidateRequest, RecoveryRequest, VerifyCodeRequest, ChangePasswordRequest, GetUserRequest } from './auth.pb';
 import { Observable } from 'rxjs';
-import { Body, Post } from '@nestjs/common';
+import { Body, Post, Get } from '@nestjs/common';
+import { Role } from '../common/enums/role.enum';
+import { Auth } from '../common/decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -13,6 +15,13 @@ export class AuthController {
 
   onModuleInit() {
     this.authService = this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
+  }
+
+  @Get('user/:id')
+  @Auth(Role.USER)
+  getUser(@Param('id') id:number): Observable<any> {
+    const request: GetUserRequest = {userId: id};
+    return this.authService.getUser(request);
   }
 
   @Post('register')

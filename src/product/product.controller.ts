@@ -24,14 +24,14 @@ export class ProductController {
   }
 
   @Get(':id')
-  @Auth(Role.ADMIN)
+  @Auth(Role.USER)
   findOne(@Param('id') id: number): Observable<any> {
     const request: FindOneRequest = { id };
     return this.productService.findOne(request);
   }
 
   @Post('decrease-stock')
-  @Auth(Role.ADMIN)
+  @Auth(Role.USER)
   decreaseStock(@Body() request: DecreaseStockRequest): Observable<any> {
     return this.productService.decreaseStock(request);
   }
